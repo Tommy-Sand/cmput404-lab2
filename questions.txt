@@ -1,0 +1,6 @@
+1. To specify a TCP socket you can either call socket.create_connection() with a host post tuple which will create a tcp socket and connect to the host and port. Or you can call socket.socket() you can also specify type=SOCK_STREAM but by default socket.socket() will create a socket stream which is a TCP socket
+2. A client socket will connect to one and only one server socket. A server socket can connect to multiple client sockets. It first needs to be created, bound to a port, listen for incoming connection requests, accept connection from client sockets and then process the client socket. When a client socket is finished with a server socket it closes and the server socket will move onto the next client socket. This is assuming a non multithreaded/processing apporach.
+3. We can set SO_REUSEPORT to true when calling socket.create_server() by passing reuse_port=True. Or once you have created a socket through socket.socket() you can run socket.setsockopt() and pass in socket.SO_REUSEADDR
+4. We get the incoming connection's address as well as any data it sends
+5. recv() returns the HTTP response header plus the response contents bounded by the buffer size.
+
