@@ -1,24 +1,30 @@
 import socket
+import multiprocessing as mp
 
-localhost = "127.0.0.1"
-port = 8001
-
-try:
-	ser = socket.create_server((localhost, port), backlog=200)
-except Exception as e:
-	print(str(e))
-
-while(True):
+def handle_client(conn, addr):
+	print("Connected to: ", addr)
 	try:
-		conn_soc, clt_addr = ser.accept();
-	except:
-		print(str(error))
-		continue
-
-	try:
-		buff = conn_soc.recv(4086)
+		buff = conn.recv(4086)
 		print(buff)
-		conn_soc.send(buff)
-	except Exception as error:
-		print(str(error))
-	conn_soc.close()	
+		conn.send(buff)
+	except Exception as e:
+		print(str(e))
+	conn.close()
+
+def main():
+	localhost = "127.0.0.1"
+	port = 8001
+
+	ser = socket.create_server((localhost, port), backlog=200)
+
+	while(True):
+		try:
+			conn, addr = ser.accept();
+			p = mp.Process(target=handle_client, args=(conn, addr, ))
+			p.start()
+		except:
+			print(str(error))
+			continue
+			
+if(__name__ == "__main__"):
+	main()
